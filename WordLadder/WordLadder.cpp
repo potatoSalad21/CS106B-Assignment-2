@@ -15,7 +15,8 @@
 #include "StanfordCPPLib/queue.h"
 using std::string;
 
-string getLadder(Lexicon &words, string start, string dest);
+vector<string> getLadder(Lexicon &words, string start, string dest);
+void printLadder(vector<string> &ladder);
 
 int main() {
     Lexicon data("EnglishWords.dat");
@@ -28,7 +29,12 @@ int main() {
             continue;
         }
 
-        getLadder(data, startWord, endWord);
+        vector<string> ladder = getLadder(data, startWord, endWord);
+        if (ladder.size() == 0) {
+            std::cout << "Can't constrcut a ladder" << std::endl;
+            return 0;
+        }
+        printLadder(ladder);
     }
 
     return 0;
@@ -37,8 +43,47 @@ int main() {
 /* Constructs the word ladder with start and destination words
 * return: word ladder string
 */
-string getLadder(Lexicon &words, string start, string dest) {
+vector<string> getLadder(Lexicon &words, string start, string dest) {
     Queue<vector<string>> ladder;
+    ladder.enqueue(vector<string>({ start })); // for base-case
+    Lexicon checkedWords;
 
-    return "";
+    while (!ladder.isEmpty()) {
+        vector<string> currentLad = ladder.dequeue();
+        // base case: ladder completed
+        if (currentLad[currentLad.size() - 1] == dest) {
+            //currentLad.pop_back();
+            return currentLad;
+        }
+
+        for (int i = 0; i < start.length(); i++) {
+            for (char ch = 'a'; ch <= 'z'; ch++) {
+                string changedWord = currentLad[currentLad.size() - 1];
+                changedWord[i] = ch;
+
+                if (changedWord == dest) {
+                    currentLad.push_back(dest);
+                    return currentLad;
+                }
+
+                if (words.contains(changedWord) && !checkedWords.contains(changedWord)) {
+                    vector<string> newLad= currentLad;
+                    newLad.push_back(changedWord);
+                    checkedWords.add(changedWord);
+                    ladder.enqueue(newLad);
+                }
+            }
+        }
+    }
+
+    return vector<string>(); // ladder can't be constructed, return empty vector
+}
+
+// print the words from the ladder
+void printLadder(vector<string> &ladder) {
+    cout << "Found Ladder: ";
+    for (string word : ladder) {
+        cout << word << " ";
+    }
+    cout << std::endl;
 }
