@@ -8,6 +8,7 @@
  */
 
 #include <iostream>
+#include <unordered_set>
 #include <vector>
 #include "StanfordCPPLib/console.h"
 #include "StanfordCPPLib/simpio.h"
@@ -15,11 +16,12 @@
 #include "StanfordCPPLib/queue.h"
 using std::string;
 
-vector<string> getLadder(Lexicon &words, string start, string dest);
+vector<string> getLadder(Lexicon &words, string &start, string &dest);
 void printLadder(vector<string> &ladder);
 
 int main() {
-    Lexicon data("EnglishWords.dat");
+    Lexicon data("EnglishWords.txt");
+    std::cout << "HERE" << std::endl;
     while (true) {
         string startWord = getLine("Enter start word (RETURN to exit): ");
         string endWord = getLine("Enter destination word (RETURN to exit): ");
@@ -43,16 +45,16 @@ int main() {
 /* Constructs the word ladder with start and destination words
 * return: word ladder string
 */
-vector<string> getLadder(Lexicon &words, string start, string dest) {
+vector<string> getLadder(Lexicon &words, string &start, string &dest) {
     Queue<vector<string>> ladder;
     ladder.enqueue(vector<string>({ start })); // for base-case
-    Lexicon checkedWords;
+    unordered_set<string> checkedWords;
 
     while (!ladder.isEmpty()) {
         vector<string> currentLad = ladder.dequeue();
         // base case: ladder completed
         if (currentLad[currentLad.size() - 1] == dest) {
-            //currentLad.pop_back();
+            currentLad.pop_back();
             return currentLad;
         }
 
@@ -66,10 +68,10 @@ vector<string> getLadder(Lexicon &words, string start, string dest) {
                     return currentLad;
                 }
 
-                if (words.contains(changedWord) && !checkedWords.contains(changedWord)) {
+                if (words.contains(changedWord) && !checkedWords.count(changedWord)) {
                     vector<string> newLad= currentLad;
                     newLad.push_back(changedWord);
-                    checkedWords.add(changedWord);
+                    checkedWords.insert(changedWord);
                     ladder.enqueue(newLad);
                 }
             }
