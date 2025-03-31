@@ -34,7 +34,7 @@ int main() {
         vector<string> ladder = getLadder(data, startWord, endWord);
         if (ladder.size() == 0) {
             std::cout << "Can't constrcut a ladder" << std::endl;
-            return 0;
+            continue;
         }
         printLadder(ladder);
     }
