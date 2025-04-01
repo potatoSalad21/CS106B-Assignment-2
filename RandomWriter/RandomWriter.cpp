@@ -13,10 +13,11 @@
 #include <unordered_map>
 #include "StanfordCPPLib/console.h"
 #include "StanfordCPPLib/simpio.h"
+#include "StanfordCPPLib/random.h"
 using namespace std;
 
 void getCharFrequencies(ifstream&, unordered_map<string, vector<char>>&, int);
-void generateText();
+void generateText(unordered_map<string, vector<char>>&, string&);
 ifstream getFile();
 int getMarkov();
 
@@ -28,12 +29,30 @@ int main() {
 
     unordered_map<string, vector<char>> freqMap;
     getCharFrequencies(file, freqMap, markovNum);
+    generateText(freqMap, getMostFreq(freqMap)); // TODO implement getMostFreq func
 
     return 0;
 }
 
 // Generates the text according to the chosen markov model and model training text
-void generateText() {
+void generateText(unordered_map<string, vector<char>> &freqMap, string &mostFreq) {
+    if (freqMap.empty()) {
+        cout << "Can't generate text, Not enough info!" << endl;
+        return;
+    }
+
+    cout << mostFreq;
+    int charNum = mostFreq.size();
+    string curr = mostFreq;
+    while (charNum < 2000) {
+        vector<char> followingChars = freqMap[curr];
+        if (followingChars.empty()) break;
+
+        int randIdx = randomInteger(0, followingChars.size()-1);
+        cout << followingChars[randIdx];
+        curr = curr.substr(1) + followingChars[randIdx];
+        charNum++;
+    }
 
 }
 
@@ -49,7 +68,7 @@ void getCharFrequencies(ifstream &data, unordered_map<string, vector<char>> &fre
 
     while (data.get(ch)) {
         freqMap[curr].push_back(ch);
-        curr = curr.substr(1);
+        curr = curr.substr(1) + ch; // push back first char
     }
 }
 
