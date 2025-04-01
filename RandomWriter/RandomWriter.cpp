@@ -15,25 +15,51 @@
 #include "StanfordCPPLib/simpio.h"
 using namespace std;
 
-unordered_map<string, vector<char>> getCharFrequencies(ifstream);
+void getCharFrequencies(ifstream&, unordered_map<string, vector<char>>&, int);
 void generateText();
 ifstream getFile();
 int getMarkov();
 
 int main() {
+    // get the starting info ready
     string textName = getLine("Enter the text file name: ");
     ifstream file = getFile();
     int markovNum = getMarkov();
 
+    unordered_map<string, vector<char>> freqMap;
+    getCharFrequencies(file, freqMap, markovNum);
+
     return 0;
+}
+
+// Generates the text according to the chosen markov model and model training text
+void generateText() {
+
+}
+
+// Function reads file by characters and constructs the matrix of character frequencies
+void getCharFrequencies(ifstream &data, unordered_map<string, vector<char>> &freqMap, int markovNum) {
+    string curr; // store first k chars
+    char ch;
+    for (int i = 0; i < markovNum; i++) {
+        if (data.get(ch))
+            curr += ch;
+        else return;
+    }
+
+    while (data.get(ch)) {
+        freqMap[curr].push_back(ch);
+        curr = curr.substr(1);
+    }
 }
 
 // Function gets the text file name from user and validates input
 ifstream getFile() {
     while (true) {
-        string textName = getLine("Enter the CORRECT text file name: ");
+        string textName = getLine("Enter the correct text file name: ");
         ifstream file = ifstream{ textName };
         if (file) return file;
+        cerr << "Error: incorrect file name." << endl;
     }
 }
 
@@ -47,16 +73,3 @@ int getMarkov() {
     return markovNum;
 }
 
-// Function reads file by characters and constructs the matrix of character frequencies
-unordered_map<string, vector<char>> getCharFrequencies(ifstream &data) {
-    char ch;
-    while (data.get(ch)) {
-
-    }
-
-}
-
-// Generates the text according to the chosen markov model and model training text
-void generateText() {
-
-}
