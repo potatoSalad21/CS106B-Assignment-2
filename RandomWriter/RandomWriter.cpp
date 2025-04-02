@@ -18,6 +18,7 @@ using namespace std;
 
 void getCharFrequencies(ifstream&, unordered_map<string, vector<char>>&, int);
 void generateText(unordered_map<string, vector<char>>&, string&);
+string getMostFreq(unordered_map<string, vector<char>>&);
 ifstream getFile();
 int getMarkov();
 
@@ -29,7 +30,9 @@ int main() {
 
     unordered_map<string, vector<char>> freqMap;
     getCharFrequencies(file, freqMap, markovNum);
-    generateText(freqMap, getMostFreq(freqMap)); // TODO implement getMostFreq func
+
+    string mostFreq = getMostFreq(freqMap);
+    generateText(freqMap, mostFreq);
 
     return 0;
 }
@@ -70,6 +73,20 @@ void getCharFrequencies(ifstream &data, unordered_map<string, vector<char>> &fre
         freqMap[curr].push_back(ch);
         curr = curr.substr(1) + ch; // push back first char
     }
+}
+
+string getMostFreq(unordered_map<string, vector<char>> &freqMap) {
+    int res = 0;
+    string maxSequence;
+    for (auto& [seq, _] : freqMap) {
+        int followingCharsSz = freqMap[seq].size();
+        if (followingCharsSz > res) {
+            res = followingCharsSz;
+            maxSequence = seq;
+        }
+    }
+
+    return maxSequence;
 }
 
 // Function gets the text file name from user and validates input
