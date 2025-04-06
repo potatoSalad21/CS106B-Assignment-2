@@ -24,7 +24,6 @@ int getMarkov();
 
 int main() {
     // get the starting info ready
-    string textName = getLine("Enter the text file name: ");
     ifstream file = getFile();
     int markovNum = getMarkov();
 
@@ -93,9 +92,9 @@ string getMostFreq(unordered_map<string, vector<char>> &freqMap) {
 ifstream getFile() {
     while (true) {
         string textName = getLine("Enter the correct text file name: ");
-        ifstream file = ifstream{ textName };
+        ifstream file{ textName };
         if (file) return file;
-        cerr << "Error: incorrect file name." << endl;
+        cout << "Error: incorrect file name." << endl;
     }
 }
 

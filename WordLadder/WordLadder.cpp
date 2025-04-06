@@ -14,26 +14,25 @@
 #include "StanfordCPPLib/simpio.h"
 #include "StanfordCPPLib/lexicon.h"
 #include "StanfordCPPLib/queue.h"
-using std::string;
+using namespace std;
 
 vector<string> getLadder(Lexicon &words, string &start, string &dest);
 void printLadder(vector<string> &ladder);
 
 int main() {
     Lexicon data("EnglishWords.txt");
-    std::cout << "HERE" << std::endl;
     while (true) {
         string startWord = getLine("Enter start word (RETURN to exit): ");
         string endWord = getLine("Enter destination word (RETURN to exit): ");
         if (startWord == "" || endWord == "") break; // validate input
         if (startWord.length() != endWord.length()) {
-            std::cout << "Can't find a ladder" << std::endl;
+            cout << "Can't find a ladder" << std::endl;
             continue;
         }
 
         vector<string> ladder = getLadder(data, startWord, endWord);
         if (ladder.size() == 0) {
-            std::cout << "Can't constrcut a ladder" << std::endl;
+            cout << "Can't constrcut a ladder" << std::endl;
             continue;
         }
         printLadder(ladder);
@@ -87,5 +86,5 @@ void printLadder(vector<string> &ladder) {
     for (string word : ladder) {
         cout << word << " ";
     }
-    cout << std::endl;
+    cout << endl;
 }
